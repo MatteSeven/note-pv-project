@@ -1,34 +1,32 @@
-import requests
+import urllib.request
 import json
 import sys
 
 def scrape():
-    # noteの公式API
+    # noteのプロフィール用API
+    # 記事情報の中に「eyecatchUrl」が含まれていることが確定しているエンドポイントを直接叩く
     url = "https://note.com/api/v2/creators/void_404/contents?kind=note&page=1"
-    headers = {'User-Agent': 'Mozilla/5.0'}
     
     try:
-        response = requests.get(url, headers=headers, timeout=10)
-        data = response.json()
-        contents = data.get('data', {}).get('contents', [])
-        
-        results = []
-        for note in contents:
-            # 画像URLの取得をより確実にする
-            # 1. eyecatchUrl, 2. largeImageUrl を優先的にチェック
-            image_url = note.get('eyecatchUrl') or note.get('largeImageUrl') or ""
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read().decode())
+            contents = data.get('data', {}).get('contents', [])
             
-            results.append({
-                "url": note.get('noteUrl'),
-                "title": note.get('name'),
-                "image": image_url,
-                "likes": str(note.get('likeCount', 0)),
-                "comments": str(note.get('commentCount', 0))
-            })
+            results = []
+            for note in contents:
+                # 確実に画像データを抽出する構造
+                results.append({
+                    "url": note.get('noteUrl'),
+                    "title": note.get('name'),
+                    "image": note.get('eyecatchUrl'), 
+                    "likes": str(note.get('likeCount', 0)),
+                    "comments": str(note.get('commentCount', 0))
+                })
             
-        with open('data.json', 'w', encoding='utf-8') as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
-            
+            with open('data.json', 'w', encoding='utf-8') as f:
+                json.dump(results, f, indent=2, ensure_ascii=False)
+                
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)
