@@ -8,38 +8,41 @@ RSS_URL = "https://note.com/void_404/rss"
 
 def get_metadata(article_url):
     try:
-        response = requests.get(article_url, timeout=10)
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        response = requests.get(article_url, headers=headers, timeout=10)
         soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # 取得
         image = soup.find("meta", property="og:image")
         title = soup.find("meta", property="og:title")
+        likes = soup.select_one('.o-note-like-count')
+        comments = soup.select_one('.o-note-comment-count')
+        
         return {
+            "url": article_url,
+            "title": title['content'] if title else "タイトルなし",
             "image": image['content'] if image else "",
-            "title": title['content'] if title else "タイトルなし"
+            "likes": likes.text.strip() if likes else "0",
+            "comments": comments.text.strip() if comments else "0"
         }
     except:
-        return {"image": "", "title": "読み込み失敗"}
+        return {"url": article_url, "title": "読み込み失敗", "image": "", "likes": "0", "comments": "0"}
 
 try:
     headers = {'User-Agent': 'Mozilla/5.0'}
     response = requests.get(RSS_URL, headers=headers, timeout=15)
     root = ET.fromstring(response.content)
     
-    # ここで[:5]を外せば、RSSに含まれる全件（通常20件など）が取得できる
     items = root.findall('.//item')
-
-    data = [] # 辞書からリスト形式に変更して扱いやすくする
+    data = []
+    
     for item in items:
         link = item.find('link').text
-        meta = get_metadata(link)
-        data.append({
-            "url": link,
-            "title": meta["title"],
-            "image": meta["image"]
-        })
+        data.append(get_metadata(link))
 
-    with open('data.json', 'w') as f:
+    with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-    print("Updated successfully!")
+    print("Successfully updated with stats!")
 
 except Exception as e:
     print(f"Error: {e}")
