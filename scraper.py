@@ -1,41 +1,34 @@
-import asyncio
+import requests
 import json
-from pyppeteer import launch
+import sys
 
-async def main():
-    # GitHub Actions環境用にサンドボックスモードをオフ
-    browser = await launch(args=['--no-sandbox', '--disable-setuid-sandbox'])
-    page = await browser.newPage()
+def scrape():
+    # noteの公式プロフィールAPIを直接叩く
+    # クエリパラメータで記事一覧を取得
+    url = "https://note.com/api/v2/creators/void_404/contents?kind=note&page=1"
+    headers = {'User-Agent': 'Mozilla/5.0'}
     
-    # noteのプロフィールページへアクセス
-    await page.goto('https://note.com/void_404', waitUntil='networkidle2')
-    
-    # ページを少しスクロールして画像を読み込ませる
-    await page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
-    await asyncio.sleep(2) 
-
-    # データを抽出
-    data = await page.evaluate('''() => {
-        const cards = Array.from(document.querySelectorAll('.o-noteCard'));
-        return cards.map(card => {
-            const titleEl = card.querySelector('.o-noteCard__title');
-            const imgEl = card.querySelector('img');
-            const likeEl = card.querySelector('.o-noteCard__likeCount');
-            const commentEl = card.querySelector('.o-noteCard__commentCount');
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        data = response.json()
+        contents = data.get('data', {}).get('contents', [])
+        
+        results = []
+        for note in contents:
+            results.append({
+                "url": note.get('noteUrl'),
+                "title": note.get('name'),
+                "image": note.get('eyecatchUrl'),
+                "likes": str(note.get('likeCount', 0)),
+                "comments": str(note.get('commentCount', 0))
+            })
             
-            return {
-                url: card.querySelector('a')?.href || "",
-                title: titleEl ? titleEl.innerText : "No Title",
-                image: imgEl ? imgEl.src : "",
-                likes: likeEl ? likeEl.innerText.trim() : "0",
-                comments: commentEl ? commentEl.innerText.trim() : "0"
-            };
-        });
-    }''')
-    
-    await browser.close()
-    
-    with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+        with open('data.json', 'w', encoding='utf-8') as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
+            
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
 
-asyncio.get_event_loop().run_until_complete(main())
+if __name__ == "__main__":
+    scrape()
