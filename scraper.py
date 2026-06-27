@@ -3,6 +3,18 @@ import json
 import time
 from bs4 import BeautifulSoup
 
+# フォロワー数取得用関数を追加
+def get_follower_count():
+    try:
+        api_url = "https://note.com/api/v2/creators/void_404"
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        req = urllib.request.Request(api_url, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read().decode())
+            return data.get('data', {}).get('followerCount', 0)
+    except:
+        return 0
+
 def scrape():
     results = []
     page = 1
@@ -10,7 +22,6 @@ def scrape():
     print("全件取得を開始します...")
     
     while True:
-        # kind=noteで記事のみを取得
         api_url = f"https://note.com/api/v2/creators/void_404/contents?kind=note&page={page}"
         headers = {'User-Agent': 'Mozilla/5.0'}
         
@@ -20,7 +31,6 @@ def scrape():
                 data = json.loads(response.read().decode())
                 contents = data.get('data', {}).get('contents', [])
                 
-                # 記事が空になったら取得完了
                 if not contents:
                     break
 
@@ -28,7 +38,6 @@ def scrape():
                     url = note.get('noteUrl')
                     image_url = note.get('eyecatchUrl')
                     
-                    # 画像がない場合はHTMLからog:imageを取得
                     if not image_url:
                         try:
                             with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=5) as page_res:
@@ -48,17 +57,24 @@ def scrape():
                 
                 print(f"{page}ページ目取得完了 (現在 {len(results)} 件)")
                 page += 1
-                time.sleep(1) # サーバー負荷対策
+                time.sleep(1) 
 
         except Exception as e:
             print(f"エラー発生: {e}")
             break
 
+    # ★ここを修正：フォロワー数を取得してデータを構築
+    follower_count = get_follower_count()
+    final_data = {
+        "followerCount": follower_count,
+        "contents": results
+    }
+
     # 全件を保存
     with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(results, f, indent=2, ensure_ascii=False)
+        json.dump(final_data, f, indent=2, ensure_ascii=False)
         
-    print(f"完了！合計 {len(results)} 件のデータを保存しました。")
+    print(f"完了！合計 {len(results)} 件のデータを保存しました。フォロワー数: {follower_count}")
 
 if __name__ == "__main__":
     scrape()
