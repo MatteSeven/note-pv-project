@@ -1,33 +1,41 @@
 import urllib.request
 import json
 import time
-import os
+import datetime
 from bs4 import BeautifulSoup
 
-def get_creator_data():
+def get_follower_count():
     try:
         api_url = "https://note.com/api/v2/creators/void_404"
         headers = {'User-Agent': 'Mozilla/5.0'}
         req = urllib.request.Request(api_url, headers=headers)
         with urllib.request.urlopen(req, timeout=10) as response:
-            return json.loads(response.read().decode()).get('data', {})
+            data = json.loads(response.read().decode())
+            return data.get('data', {}).get('followerCount', 0)
     except:
-        return {}
+        return 0
+
+def update_history(follower_count):
+    history_file = 'history.json'
+    today = datetime.date.today().isoformat()
+    try:
+        with open(history_file, 'r', encoding='utf-8') as f:
+            history = json.load(f)
+    except:
+        history = []
+    
+    # 同じ日のデータがあれば更新、なければ追加して最新7日分に絞る
+    history = [d for d in history if d['date'] != today]
+    history.append({"date": today, "followers": follower_count})
+    history = sorted(history, key=lambda x: x['date'])[-7:]
+    
+    with open(history_file, 'w', encoding='utf-8') as f:
+        json.dump(history, f, indent=2, ensure_ascii=False)
 
 def scrape():
-    # 1. 履歴の読み込み
-    history = {}
-    if os.path.exists('history.json'):
-        with open('history.json', 'r', encoding='utf-8') as f:
-            history = json.load(f)
-
-    creator_data = get_creator_data()
-    current_follower = creator_data.get('followerCount', 0)
-    prev_follower = history.get('followerCount', current_follower)
-    
     results = []
     page = 1
-    print("データ取得を開始します...")
+    print("全件取得を開始します...")
     
     while True:
         api_url = f"https://note.com/api/v2/creators/void_404/contents?kind=note&page={page}"
@@ -38,54 +46,31 @@ def scrape():
                 data = json.loads(response.read().decode())
                 contents = data.get('data', {}).get('contents', [])
                 if not contents: break
-
                 for note in contents:
-                    note_id = str(note.get('id'))
-                    likes = note.get('likeCount', 0)
-                    comments = note.get('commentCount', 0) # コメント数取得
-                    
-                    # 履歴から前回のデータを取得
-                    prev_note = history.get('contents', {}).get(note_id, {})
-                    prev_likes = prev_note.get('likes', likes)
-                    prev_comments = prev_note.get('comments', comments)
-                    
                     url = note.get('noteUrl')
-                    image_url = note.get('eyecatchUrl') or ""
-                    
+                    image_url = note.get('eyecatchUrl')
+                    if not image_url:
+                        try:
+                            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=5) as page_res:
+                                soup = BeautifulSoup(page_res.read(), 'html.parser')
+                                og_img = soup.find("meta", property="og:image")
+                                image_url = og_img.get('content') if og_img else ""
+                        except: image_url = ""
                     results.append({
-                        "id": note_id,
-                        "url": url,
-                        "title": note.get('name'),
-                        "image": image_url,
-                        "likes": likes,
-                        "like_diff": likes - prev_likes,          # スキ数の増分
-                        "comments": comments,
-                        "comment_diff": comments - prev_comments, # コメント数の増分
-                        "publishAt": note.get('publishAt'),
-                        "isPaid": note.get('isPaid')
+                        "url": url, "title": note.get('name'), "image": image_url,
+                        "likes": str(note.get('likeCount', 0)), "comments": str(note.get('commentCount', 0))
                     })
                 page += 1
                 time.sleep(1)
-        except: break
+        except Exception as e:
+            print(f"エラー発生: {e}")
+            break
 
-    # 2. data.json の保存（フロントエンド表示用）
-    final_data = {
-        "followerCount": current_follower,
-        "followerDiff": current_follower - prev_follower,
-        "contents": results
-    }
+    follower_count = get_follower_count()
+    update_history(follower_count) # 履歴更新
     with open('data.json', 'w', encoding='utf-8') as f:
-        json.dump(final_data, f, indent=2, ensure_ascii=False)
-        
-    # 3. history.json の保存（コメント数も記録）
-    history_save = {
-        "followerCount": current_follower,
-        "contents": {n['id']: {"likes": n['likes'], "comments": n['comments']} for n in results}
-    }
-    with open('history.json', 'w', encoding='utf-8') as f:
-        json.dump(history_save, f, indent=2, ensure_ascii=False)
-
-    print(f"完了！合計 {len(results)} 件を保存しました。")
+        json.dump({"followerCount": follower_count, "contents": results}, f, indent=2, ensure_ascii=False)
+    print(f"完了！フォロワー数: {follower_count}")
 
 if __name__ == "__main__":
     scrape()
