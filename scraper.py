@@ -1,80 +1,89 @@
 import urllib.request
 import json
 import time
+import os
 from bs4 import BeautifulSoup
 
-# フォロワー数取得用関数を追加
-def get_follower_count():
+def get_creator_data():
     try:
+        # フォロワー数と最新記事の取得元API
         api_url = "https://note.com/api/v2/creators/void_404"
         headers = {'User-Agent': 'Mozilla/5.0'}
         req = urllib.request.Request(api_url, headers=headers)
         with urllib.request.urlopen(req, timeout=10) as response:
-            data = json.loads(response.read().decode())
-            return data.get('data', {}).get('followerCount', 0)
+            return json.loads(response.read().decode()).get('data', {})
     except:
-        return 0
+        return {}
 
 def scrape():
+    # 1. 履歴の読み込み（比較用）
+    history = {}
+    if os.path.exists('history.json'):
+        with open('history.json', 'r', encoding='utf-8') as f:
+            history = json.load(f)
+
+    creator_data = get_creator_data()
+    current_follower = creator_data.get('followerCount', 0)
+    prev_follower = history.get('followerCount', current_follower)
+    
     results = []
     page = 1
-    
-    print("全件取得を開始します...")
+    print("データ取得を開始します...")
     
     while True:
         api_url = f"https://note.com/api/v2/creators/void_404/contents?kind=note&page={page}"
         headers = {'User-Agent': 'Mozilla/5.0'}
-        
         try:
             req = urllib.request.Request(api_url, headers=headers)
             with urllib.request.urlopen(req, timeout=10) as response:
                 data = json.loads(response.read().decode())
                 contents = data.get('data', {}).get('contents', [])
-                
-                if not contents:
-                    break
+                if not contents: break
 
                 for note in contents:
-                    url = note.get('noteUrl')
-                    image_url = note.get('eyecatchUrl')
+                    note_id = str(note.get('id'))
+                    likes = note.get('likeCount', 0)
                     
-                    if not image_url:
-                        try:
-                            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=5) as page_res:
-                                soup = BeautifulSoup(page_res.read(), 'html.parser')
-                                og_img = soup.find("meta", property="og:image")
-                                image_url = og_img.get('content') if og_img else ""
-                        except:
-                            image_url = ""
+                    # 前日のスキ数を取得（なければ現在値＝増分0）
+                    prev_likes = history.get('contents', {}).get(note_id, {}).get('likes', likes)
+                    
+                    # 有料判定用URL取得
+                    url = note.get('noteUrl')
+                    image_url = note.get('eyecatchUrl') or ""
                     
                     results.append({
+                        "id": note_id,
                         "url": url,
                         "title": note.get('name'),
                         "image": image_url,
-                        "likes": str(note.get('likeCount', 0)),
-                        "comments": str(note.get('commentCount', 0))
+                        "likes": likes,
+                        "like_diff": likes - prev_likes, # スキの増分
+                        "comments": note.get('commentCount', 0),
+                        "publishAt": note.get('publishAt'), # 投稿日時
+                        "isPaid": note.get('isPaid')        # 有料記事判定
                     })
-                
-                print(f"{page}ページ目取得完了 (現在 {len(results)} 件)")
                 page += 1
-                time.sleep(1) 
+                time.sleep(1)
+        except: break
 
-        except Exception as e:
-            print(f"エラー発生: {e}")
-            break
-
-    # ★ここを修正：フォロワー数を取得してデータを構築
-    follower_count = get_follower_count()
+    # 2. data.json の保存（フロントエンド表示用）
     final_data = {
-        "followerCount": follower_count,
+        "followerCount": current_follower,
+        "followerDiff": current_follower - prev_follower, # フォロワー増分
         "contents": results
     }
-
-    # 全件を保存
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(final_data, f, indent=2, ensure_ascii=False)
         
-    print(f"完了！合計 {len(results)} 件のデータを保存しました。フォロワー数: {follower_count}")
+    # 3. history.json の保存（次回比較用）
+    history_save = {
+        "followerCount": current_follower,
+        "contents": {n['id']: {"likes": n['likes']} for n in results}
+    }
+    with open('history.json', 'w', encoding='utf-8') as f:
+        json.dump(history_save, f, indent=2, ensure_ascii=False)
+
+    print(f"完了！合計 {len(results)} 件を保存しました。")
 
 if __name__ == "__main__":
     scrape()
