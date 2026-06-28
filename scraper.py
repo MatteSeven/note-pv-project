@@ -2,7 +2,7 @@ import urllib.request
 import json
 import time
 import os
-from datetime import datetime
+from bs4 import BeautifulSoup
 
 def get_creator_data():
     try:
@@ -15,6 +15,7 @@ def get_creator_data():
         return {}
 
 def scrape():
+    # 1. 履歴の読み込み
     history = {}
     if os.path.exists('history.json'):
         with open('history.json', 'r', encoding='utf-8') as f:
@@ -41,25 +42,25 @@ def scrape():
                 for note in contents:
                     note_id = str(note.get('id'))
                     likes = note.get('likeCount', 0)
-                    comments = note.get('commentCount', 0)
+                    comments = note.get('commentCount', 0) # コメント数取得
                     
+                    # 履歴から前回のデータを取得
                     prev_note = history.get('contents', {}).get(note_id, {})
                     prev_likes = prev_note.get('likes', likes)
                     prev_comments = prev_note.get('comments', comments)
                     
-                    # 以前のシンプルかつ確実な取得方法を維持
-                    # もしこれでも取れない場合はNoteのAPIデータ構造が変わった可能性が高いです
+                    url = note.get('noteUrl')
                     image_url = note.get('eyecatchUrl') or ""
                     
                     results.append({
                         "id": note_id,
-                        "url": note.get('noteUrl'),
+                        "url": url,
                         "title": note.get('name'),
                         "image": image_url,
                         "likes": likes,
-                        "like_diff": likes - prev_likes,
+                        "like_diff": likes - prev_likes,          # スキ数の増分
                         "comments": comments,
-                        "comment_diff": comments - prev_comments,
+                        "comment_diff": comments - prev_comments, # コメント数の増分
                         "publishAt": note.get('publishAt'),
                         "isPaid": note.get('isPaid')
                     })
@@ -67,9 +68,8 @@ def scrape():
                 time.sleep(1)
         except: break
 
-    # data.json に更新日時を含めて保存
+    # 2. data.json の保存（フロントエンド表示用）
     final_data = {
-        "updatedAt": datetime.now().strftime("%Y年%m月%d日 %H:%M"),
         "followerCount": current_follower,
         "followerDiff": current_follower - prev_follower,
         "contents": results
@@ -77,6 +77,7 @@ def scrape():
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(final_data, f, indent=2, ensure_ascii=False)
         
+    # 3. history.json の保存（コメント数も記録）
     history_save = {
         "followerCount": current_follower,
         "contents": {n['id']: {"likes": n['likes'], "comments": n['comments']} for n in results}
