@@ -2,8 +2,7 @@ import urllib.request
 import json
 import time
 import os
-from bs4 import BeautifulSoup
-from datetime import datetime # ★追加：時刻取得用
+from datetime import datetime
 
 def get_creator_data():
     try:
@@ -16,7 +15,6 @@ def get_creator_data():
         return {}
 
 def scrape():
-    # 1. 履歴の読み込み
     history = {}
     if os.path.exists('history.json'):
         with open('history.json', 'r', encoding='utf-8') as f:
@@ -49,12 +47,13 @@ def scrape():
                     prev_likes = prev_note.get('likes', likes)
                     prev_comments = prev_note.get('comments', comments)
                     
-                    url = note.get('noteUrl')
+                    # 以前のシンプルかつ確実な取得方法を維持
+                    # もしこれでも取れない場合はNoteのAPIデータ構造が変わった可能性が高いです
                     image_url = note.get('eyecatchUrl') or ""
                     
                     results.append({
                         "id": note_id,
-                        "url": url,
+                        "url": note.get('noteUrl'),
                         "title": note.get('name'),
                         "image": image_url,
                         "likes": likes,
@@ -68,9 +67,9 @@ def scrape():
                 time.sleep(1)
         except: break
 
-    # 2. data.json の保存（★updatedAtを追加）
+    # data.json に更新日時を含めて保存
     final_data = {
-        "updatedAt": datetime.now().strftime("%Y年%m月%d日 %H:%M"), 
+        "updatedAt": datetime.now().strftime("%Y年%m月%d日 %H:%M"),
         "followerCount": current_follower,
         "followerDiff": current_follower - prev_follower,
         "contents": results
@@ -78,7 +77,6 @@ def scrape():
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(final_data, f, indent=2, ensure_ascii=False)
         
-    # 3. history.json の保存
     history_save = {
         "followerCount": current_follower,
         "contents": {n['id']: {"likes": n['likes'], "comments": n['comments']} for n in results}
@@ -86,7 +84,7 @@ def scrape():
     with open('history.json', 'w', encoding='utf-8') as f:
         json.dump(history_save, f, indent=2, ensure_ascii=False)
 
-    print(f"完了！合計 {len(results)} 件を保存しました。更新日時: {final_data['updatedAt']}")
+    print(f"完了！合計 {len(results)} 件を保存しました。")
 
 if __name__ == "__main__":
     scrape()
