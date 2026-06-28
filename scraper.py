@@ -61,6 +61,10 @@ def scrape():
                                 image_url = og_img.get('content') if og_img else ""
                         except: image_url = ""
                     
+                    # ★修正箇所：有料判定を price を使って確実に取得
+                    price = note.get('price', 0)
+                    is_paid = True if (price > 0 or note.get('isPaid') is True) else False
+                    
                     # 結果を格納
                     results.append({
                         "id": note_id,
@@ -72,13 +76,13 @@ def scrape():
                         "comments": comments,
                         "comment_diff": comments - prev_comments, # コメント数増減
                         "publishAt": note.get('publishAt'),       # 投稿日時
-                        "isPaid": note.get('isPaid')              # 有料記事フラグ
+                        "isPaid": is_paid                         # 有料フラグ
                     })
                 page += 1
                 time.sleep(1)
         except: break
 
-    # 2. data.json の保存（フロントエンド表示用）
+    # 2. data.json の保存
     final_data = {
         "updatedAt": datetime.now().strftime("%Y年%m月%d日 %H:%M"),
         "followerCount": current_follower,
@@ -88,7 +92,7 @@ def scrape():
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(final_data, f, indent=2, ensure_ascii=False)
         
-    # 3. history.json の保存（次回比較用）
+    # 3. history.json の保存
     history_save = {
         "followerCount": current_follower,
         "contents": {n['id']: {"likes": n['likes'], "comments": n['comments']} for n in results}
