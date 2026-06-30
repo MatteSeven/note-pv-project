@@ -16,7 +16,7 @@ def get_creator_data():
         return {}
 
 def scrape():
-    # 1. 履歴の読み込み（前回の状態と比較するため）
+    # 1. 履歴の読み込み
     history = {}
     if os.path.exists('history.json'):
         with open('history.json', 'r', encoding='utf-8') as f:
@@ -25,8 +25,17 @@ def scrape():
     # フォロワー取得
     creator_data = get_creator_data()
     current_follower = creator_data.get('followerCount', 0)
-    prev_follower = history.get('followerCount', current_follower)
     
+    # ★修正：日付判定を追加し、日付が変わっていたら history.json の count を前日値として固定
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    last_date = history.get('date', today_str)
+    
+    # 日付が変わっていたら、現在のfollowerCountをstartCount（その日の開始値）として保存する
+    if last_date != today_str:
+        start_follower = history.get('followerCount', current_follower)
+    else:
+        start_follower = history.get('startCount', current_follower)
+
     results = []
     page = 1
     
@@ -46,12 +55,10 @@ def scrape():
                     likes = note.get('likeCount', 0)
                     comments = note.get('commentCount', 0)
                     
-                    # 履歴から前回のデータを取得
                     prev_note = history.get('contents', {}).get(note_id, {})
                     prev_likes = prev_note.get('likes', likes)
                     prev_comments = prev_note.get('comments', comments)
                     
-                    # 画像取得（元のロジックを維持）
                     image_url = note.get('eyecatchUrl')
                     if not image_url:
                         try:
@@ -61,22 +68,20 @@ def scrape():
                                 image_url = og_img.get('content') if og_img else ""
                         except: image_url = ""
                     
-                    # ★修正箇所：有料判定を price を使って確実に取得
                     price = note.get('price', 0)
                     is_paid = True if (price > 0 or note.get('isPaid') is True) else False
                     
-                    # 結果を格納
                     results.append({
                         "id": note_id,
                         "url": url,
                         "title": note.get('name'),
                         "image": image_url,
                         "likes": likes,
-                        "like_diff": likes - prev_likes,          # スキ数増減
+                        "like_diff": likes - prev_likes,
                         "comments": comments,
-                        "comment_diff": comments - prev_comments, # コメント数増減
-                        "publishAt": note.get('publishAt'),       # 投稿日時
-                        "isPaid": is_paid                         # 有料フラグ
+                        "comment_diff": comments - prev_comments,
+                        "publishAt": note.get('publishAt'),
+                        "isPaid": is_paid
                     })
                 page += 1
                 time.sleep(1)
@@ -86,21 +91,23 @@ def scrape():
     final_data = {
         "updatedAt": datetime.now().strftime("%Y年%m月%d日 %H:%M"),
         "followerCount": current_follower,
-        "followerDiff": current_follower - prev_follower,
+        "followerDiff": current_follower - start_follower, # 昨日の終了時との差分
         "contents": results
     }
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(final_data, f, indent=2, ensure_ascii=False)
         
-    # 3. history.json の保存
+    # 3. history.json の保存（日付と開始値を保持）
     history_save = {
+        "date": today_str,
+        "startCount": start_follower,
         "followerCount": current_follower,
         "contents": {n['id']: {"likes": n['likes'], "comments": n['comments']} for n in results}
     }
     with open('history.json', 'w', encoding='utf-8') as f:
         json.dump(history_save, f, indent=2, ensure_ascii=False)
 
-    print(f"完了！合計 {len(results)} 件を保存しました。")
+    print(f"完了！増減: {current_follower - start_follower}人")
 
 if __name__ == "__main__":
     scrape()
