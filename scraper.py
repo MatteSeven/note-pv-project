@@ -25,8 +25,6 @@ def scrape():
     # フォロワー取得
     creator_data = get_creator_data()
     current_follower = creator_data.get('followerCount', 0)
-    
-    # ★修正：前回の記録を履歴から取得。なければ現在値をそのまま使う（初回の差分は0になる）
     prev_follower = history.get('followerCount', current_follower)
     
     results = []
@@ -53,16 +51,32 @@ def scrape():
                     prev_likes = prev_note.get('likes', likes)
                     prev_comments = prev_note.get('comments', comments)
                     
+                    # 画像取得（元のロジックを維持）
+                    image_url = note.get('eyecatchUrl')
+                    if not image_url:
+                        try:
+                            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=5) as page_res:
+                                soup = BeautifulSoup(page_res.read(), 'html.parser')
+                                og_img = soup.find("meta", property="og:image")
+                                image_url = og_img.get('content') if og_img else ""
+                        except: image_url = ""
+                    
+                    # ★修正箇所：有料判定を price を使って確実に取得
+                    price = note.get('price', 0)
+                    is_paid = True if (price > 0 or note.get('isPaid') is True) else False
+                    
                     # 結果を格納
                     results.append({
                         "id": note_id,
                         "url": url,
                         "title": note.get('name'),
+                        "image": image_url,
                         "likes": likes,
-                        "like_diff": likes - prev_likes,
+                        "like_diff": likes - prev_likes,          # スキ数増減
                         "comments": comments,
-                        "comment_diff": comments - prev_comments,
-                        "publishAt": note.get('publishAt')
+                        "comment_diff": comments - prev_comments, # コメント数増減
+                        "publishAt": note.get('publishAt'),       # 投稿日時
+                        "isPaid": is_paid                         # 有料フラグ
                     })
                 page += 1
                 time.sleep(1)
@@ -72,13 +86,13 @@ def scrape():
     final_data = {
         "updatedAt": datetime.now().strftime("%Y年%m月%d日 %H:%M"),
         "followerCount": current_follower,
-        "followerDiff": current_follower - prev_follower, # ここで差分を計算
+        "followerDiff": current_follower - prev_follower,
         "contents": results
     }
     with open('data.json', 'w', encoding='utf-8') as f:
         json.dump(final_data, f, indent=2, ensure_ascii=False)
         
-    # 3. history.json の保存（次回のために最新の値を保存）
+    # 3. history.json の保存
     history_save = {
         "followerCount": current_follower,
         "contents": {n['id']: {"likes": n['likes'], "comments": n['comments']} for n in results}
@@ -86,7 +100,7 @@ def scrape():
     with open('history.json', 'w', encoding='utf-8') as f:
         json.dump(history_save, f, indent=2, ensure_ascii=False)
 
-    print(f"完了！フォロワー増減: {current_follower - prev_follower}人")
+    print(f"完了！合計 {len(results)} 件を保存しました。")
 
 if __name__ == "__main__":
     scrape()
