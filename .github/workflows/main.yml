@@ -5,8 +5,9 @@ on:
   workflow_dispatch:
 jobs:
   scrape:
-    runs-on: ubuntu-latest
-    permissions:
+      runs-on: ubuntu-latest
+      timeout-minutes: 15  # タイムアウトを15分に延長
+      permissions:
       contents: write
     steps:
       - name: Checkout code
