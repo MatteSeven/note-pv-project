@@ -27,6 +27,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
+          git pull --rebase origin main
           git add .
           git commit -m "Update image and comment data" || exit 0
-          git push
+          git push origin main
