@@ -3,13 +3,18 @@ import json
 import os
 
 def get_comments_for_note(note_id):
-    # noteのコメント取得API（note_idごとに叩く）
     api_url = f"https://note.com/api/v2/notes/{note_id}/comments"
     headers = {'User-Agent': 'Mozilla/5.0'}
     try:
         req = urllib.request.Request(api_url, headers=headers)
         with urllib.request.urlopen(req, timeout=10) as response:
-            data = json.loads(response.read().decode())
+            raw_data = response.read()
+            data = json.loads(raw_data.decode())
+            
+            # 【重要】デバッグ用に、1記事目だけ生データを保存する
+            with open('raw_api_data.json', 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+                
             return data.get('data', {}).get('comments', [])
     except:
         return []
