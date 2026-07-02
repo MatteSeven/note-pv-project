@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
 jobs:
   scrape:
-      runs-on: ubuntu-latest
-      timeout-minutes: 15  # タイムアウトを15分に延長
-      permissions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
       contents: write
     steps:
       - name: Checkout code
@@ -29,10 +29,8 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          # リポジトリを最新の状態に同期
           git fetch origin main
           git reset --hard origin/main
-          # 変更を反映
           git add .
           git commit -m "Update data: $(date +'%Y-%m-%d %H:%M:%S')" || exit 0
           git push origin main
