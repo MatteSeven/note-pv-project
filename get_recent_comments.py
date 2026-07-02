@@ -4,7 +4,7 @@ import os
 import datetime
 
 def get_comments_for_note(note_id):
-    # noteの正しいコメントAPIエンドポイント
+    # noteのコメント取得用API
     api_url = f"https://note.com/api/v2/notes/{note_id}/comments"
     headers = {'User-Agent': 'Mozilla/5.0'}
     try:
@@ -13,8 +13,7 @@ def get_comments_for_note(note_id):
             data = json.loads(response.read().decode())
             comments = data.get('data', {}).get('comments', [])
             return [c.get('user', {}).get('nickname') for c in comments if c.get('user')]
-    except Exception as e:
-        print(f"APIアクセスエラー ({note_id}): {e}")
+    except Exception:
         return []
 
 def main():
@@ -26,17 +25,20 @@ def main():
         return
 
     with open(data_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+        try:
+            data = json.load(f)
+        except:
+            return
     
-    # 最新の3件を取得してコメントを抽出
+    # データを整形
     results = {"_last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
     for note in data.get('contents', [])[:3]:
         note_id = str(note.get('id'))
         results[note.get('title', 'Unknown')] = get_comments_for_note(note_id)
 
+    # 上書き保存
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(results, f, indent=2, ensure_ascii=False)
-    print("完了: latest_comments.json を更新しました")
 
 if __name__ == "__main__":
     main()
