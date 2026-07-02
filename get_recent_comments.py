@@ -1,50 +1,73 @@
 import json
 import os
 import datetime
+from collections import Counter
 from playwright.sync_api import sync_playwright
 
-def get_comments_for_note(note_id):
-    url = f"https://note.com/n/n{note_id}"
-    commenters = []
+# 取得したい最新3記事のURL
+TARGET_URLS = [
+    "https://note.com/void_404/n/n80a83ba1e98d",
+    # 他のURLを追記してください
+]
+
+def get_commenters_from_page(url):
+    commenters_data = []
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         page.goto(url, wait_until="networkidle")
         
-        # ユーザー名が含まれる要素を探す（あなたが貼ったHTML構造に基づいています）
-        # spanタグの中に名前が入っている箇所を全抽出
-        elements = page.query_selector_all("a.a-link span.truncate")
+        # ユーザー名とリンクを含む要素を探す
+        # a.a-link (リンク) の中にある span.truncate (名前) を探す
+        elements = page.query_selector_all("a.a-link.fn")
         
         for el in elements:
-            name = el.inner_text().strip()
-            # 「もっとみる」等の余計な文字列を除外
-            if name and "もっとみる" not in name and "返信" not in name:
-                commenters.append(name)
-        
+            # 名前
+            name_el = el.query_selector("span.truncate")
+            # リンク
+            url_el = el.get_attribute("href")
+            
+            if name_el:
+                name = name_el.inner_text().strip()
+                if name and "もっとみる" not in name and "返信" not in name:
+                    commenters_data.append({
+                        "name": name,
+                        "url": f"https://note.com{url_el}" if url_el.startswith('/') else url_el
+                    })
         browser.close()
-    return list(set(commenters))
+    return commenters_data
 
 def main():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    data_path = os.path.join(base_dir, 'data.json')
-    output_path = os.path.join(base_dir, 'latest_comments.json')
-
-    if not os.path.exists(data_path):
-        return
-
-    with open(data_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    all_commenters = []
     
-    results = {"_last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-    for note in data.get('contents', [])[:3]:
-        note_id = str(note.get('id'))
-        print(f"DEBUG: 記事 {note_id} のコメント取得中...")
-        names = get_comments_for_note(note_id)
-        results[note.get('title', 'Unknown')] = names
-        print(f"DEBUG: 発見したユーザー: {names}")
+    for url in TARGET_URLS:
+        print(f"DEBUG: 取得中 - {url}")
+        all_commenters.extend(get_commenters_from_page(url))
 
+    # 名前ごとの集計
+    counts = Counter([c["name"] for c in all_commenters])
+    
+    # URLを保持するための辞書を作成
+    user_urls = {c["name"]: c["url"] for c in all_commenters}
+    
+    # ランキング作成
+    ranking = []
+    for name, count in counts.most_common():
+        ranking.append({
+            "name": name,
+            "url": user_urls[name],
+            "count": count
+        })
+    
+    output = {
+        "_last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "ranking": ranking
+    }
+
+    output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'latest_comments.json')
     with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(results, f, indent=2, ensure_ascii=False)
+        json.dump(output, f, indent=2, ensure_ascii=False)
+    print("完了: プロフィールURL付きランキングを作成しました")
 
 if __name__ == "__main__":
     main()
