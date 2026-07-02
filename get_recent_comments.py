@@ -5,48 +5,31 @@ from playwright.sync_api import sync_playwright
 
 def get_comments_for_note(note_id):
     url = f"https://note.com/n/n{note_id}"
-    commenters = []
+    print(f"DEBUG: 調査開始 - {url}")
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
-            page.goto(url, timeout=30000)
-            # コメント欄のユーザー名要素が出るまで待機
-            try:
-                page.wait_for_selector(".a-link.hover\\:underline.text-text-primary.text-xs.font-bold.truncate", timeout=10000)
-            except:
-                print(f"ID {note_id}: コメント欄が見つかりませんでした")
-                browser.close()
-                return []
+            print(f"DEBUG: ページ移動中...")
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
             
-            elements = page.query_selector_all(".a-link.hover\\:underline.text-text-primary.text-xs.font-bold.truncate")
-            for el in elements:
-                name = el.inner_text().strip()
-                if name: commenters.append(name)
+            # コメント欄がある場所を特定するために、ページ全体を出力する
+            print(f"DEBUG: ページタイトル: {page.title()}")
+            
+            # コメント欄の親要素を探す
+            selector = ".comment-list" 
+            if page.query_selector(selector):
+                print("DEBUG: コメントリストを発見")
+            else:
+                print("DEBUG: コメントリストが見つかりません (ページ構造が変わった可能性あり)")
+                
+            elements = page.query_selector_all(".truncate")
+            commenters = [el.inner_text().strip() for el in elements if el.inner_text().strip()]
+            print(f"DEBUG: 抽出した名前リスト: {commenters}")
             browser.close()
+            return commenters
     except Exception as e:
-        print(f"エラー発生: {e}")
-    return list(set(commenters))
+        print(f"DEBUG: 致命的エラー: {e}")
+        return []
 
-def main():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    data_path = os.path.join(base_dir, 'data.json')
-    output_path = os.path.join(base_dir, 'latest_comments.json')
-
-    if not os.path.exists(data_path):
-        return
-
-    with open(data_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    results = {"_last_updated": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-    for note in data.get('contents', [])[:3]:
-        note_id = str(note.get('id'))
-        results[note.get('title', 'Unknown')] = get_comments_for_note(note_id)
-
-    with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(results, f, indent=2, ensure_ascii=False)
-    print("完了: Playwrightを使用してコメントを抽出しました")
-
-if __name__ == "__main__":
-    main()
+# ... (main関数の構成は以前と同じでOK)
