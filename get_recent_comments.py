@@ -6,23 +6,25 @@ from playwright.sync_api import sync_playwright
 PROFILE_URL = "https://note.com/void_404"
 
 def get_latest_article_urls(page):
-    """最新3記事のURLをリンクパターンから自動抽出"""
+    """プロフィールから最新3記事のURLを厳密に抽出"""
     page.goto(PROFILE_URL)
-    # 記事リンクが含まれる要素が表示されるまで待機
-    page.wait_for_selector("a[href*='/n/']", timeout=15000)
+    # ページ描画を待つ
+    page.wait_for_timeout(3000)
     
-    elements = page.query_selector_all("a[href*='/n/']")
+    # 記事リンク候補を全て取得
+    elements = page.query_selector_all("a")
     urls = []
     seen = set()
     
     for el in elements:
         href = el.get_attribute("href")
-        # 記事URL（/n/で始まるもの）のみを対象とする
-        if href and "/n/" in href:
+        # void_404 ユーザーの記事URLのみをターゲットにする
+        if href and "/void_404/n/" in href:
             full_url = f"https://note.com{href}" if href.startswith('/') else href
             if full_url not in seen:
                 urls.append(full_url)
                 seen.add(full_url)
+        # 最新3件で十分
         if len(urls) >= 3:
             break
     return urls
@@ -31,9 +33,9 @@ def get_comments_from_page(page, url):
     """指定URLからコメント投稿者情報を抽出"""
     try:
         page.goto(url, wait_until="networkidle")
-        # コメント欄を画面内に引きずり出すためにスクロール
+        # 確実にコメント欄までスクロール
         page.mouse.wheel(0, 15000)
-        # 投稿者名を含むリンク要素の出現を待つ
+        # コメント欄の読み込みを待つ
         page.wait_for_selector("a.a-link.fn", timeout=15000)
         
         commenters = []
@@ -43,7 +45,7 @@ def get_comments_from_page(page, url):
             url_el = el.get_attribute("href")
             if name_el and url_el:
                 name = name_el.inner_text().strip()
-                # 余計な要素を除外
+                # 無効な要素を除外
                 if name and "もっとみる" not in name and "返信" not in name:
                     commenters.append({"name": name, "url": f"https://note.com{url_el}"})
         return commenters
@@ -54,9 +56,11 @@ def get_comments_from_page(page, url):
 def main():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
+        # ブラウザコンテキストを生成（より安定させるため）
+        context = browser.new_context(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+        page = context.new_page()
         
-        # 1. 最新記事取得
+        # 1. 最新記事URL取得
         article_urls = get_latest_article_urls(page)
         print(f"DEBUG: 調査対象記事: {article_urls}")
         
@@ -75,7 +79,7 @@ def main():
             stats[name] = {"url": c["url"], "count": 0}
         stats[name]["count"] += 1
 
-    # ランキングソート
+    # ランキング順にソート
     ranking = sorted(
         [{"name": k, **v} for k, v in stats.items()],
         key=lambda x: x["count"], 
