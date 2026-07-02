@@ -1,48 +1,32 @@
 name: Update Note Images
-
 on:
   schedule:
     - cron: '0 * * * *'
   workflow_dispatch:
-
 jobs:
-  build:
+  scrape:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pages: write
-      id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4
-
-      # 1. 既存のスクレイパー
       - name: Run Scraper
         run: python scraper.py
-
-      # 2. コメント取得スクリプト
       - name: Run Comment Scraper
         run: python get_recent_comments.py
-
-      # 3. 変更をコミット
       - name: Commit and Push
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add .
-          git commit -m "Update data and comments" || exit 0
+          git commit -m "Update image and comment data" || exit 0
           git push
-
-      # 4. デプロイ
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
