@@ -1,7 +1,8 @@
 name: Update Note Images
 on:
   schedule:
-    - cron: '0 * * * *'
+    # 毎日日本時間 0:00 に実行するための設定 (UTC 15:00)
+    - cron: '0 15 * * *'
   workflow_dispatch:
 jobs:
   scrape:
@@ -29,8 +30,8 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          # ファイルの更新がある場合のみコミット
-          git add latest_comments.json
+          # scraper.py および get_recent_comments.py が生成するファイルを全てコミット対象にする
+          git add data.json history.json latest_comments.json
           if ! git diff --cached --quiet; then
             git commit -m "Update data: $(date +'%Y-%m-%d %H:%M:%S')"
             git push origin main
