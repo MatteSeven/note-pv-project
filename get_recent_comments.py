@@ -31,7 +31,7 @@ def get_commenters_from_page(url):
                 except:
                     continue
         
-        # 名前、URL、アイコンを取得
+        # 名前とURL、アイコンを取得
         link_elements = page.query_selector_all("a.a-link")
         for el in link_elements:
             name_el = el.query_selector("span.truncate")
@@ -41,7 +41,12 @@ def get_commenters_from_page(url):
                 name = name_el.inner_text().strip()
                 href = el.get_attribute("href")
                 full_url = f"https://note.com{href}" if href.startswith("/") else href
-                icon_url = img_el.get_attribute("src") if img_el else ""
+                
+                # アイコンURLの取得を強化
+                icon_url = ""
+                if img_el:
+                    # src が空の場合や data-src が優先される場合に対応
+                    icon_url = img_el.get_attribute("src") or img_el.get_attribute("data-src") or ""
                 
                 commenters_data.append({
                     "name": name, 
