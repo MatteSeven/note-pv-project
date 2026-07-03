@@ -31,22 +31,22 @@ def get_commenters_from_page(url):
                 except:
                     continue
         
-        # 名前とURL、アイコンを取得
+        # 【以前正常に動いていた取得ロジックに統合】
         link_elements = page.query_selector_all("a.a-link")
         for el in link_elements:
             name_el = el.query_selector("span.truncate")
-            img_el = el.query_selector("img")
             
             if name_el:
                 name = name_el.inner_text().strip()
                 href = el.get_attribute("href")
                 full_url = f"https://note.com{href}" if href.startswith("/") else href
                 
-                # アイコンURLの取得を強化
-                icon_url = ""
-                if img_el:
-                    # src が空の場合や data-src が優先される場合に対応
-                    icon_url = img_el.get_attribute("src") or img_el.get_attribute("data-src") or ""
+                # アイコン取得を統合（ブラウザ内での判定を入れつつ、見つからない場合は空文字）
+                icon_url = el.evaluate("""(link) => {
+                    const container = link.closest('div') || link.parentElement;
+                    const img = container.querySelector('img.a-image') || document.querySelector('img[alt="' + link.innerText + 'のプロフィールへのリンク"]');
+                    return img ? (img.getAttribute('src') || img.getAttribute('data-src') || "") : "";
+                }""")
                 
                 commenters_data.append({
                     "name": name, 
