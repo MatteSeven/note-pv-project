@@ -13,7 +13,6 @@ def get_latest_article_urls(user_url, limit=3):
     return urls
 
 def get_commenters_from_page(url):
-    # 返り値を「名前とURLのペア」のリストに変更
     commenters_data = []
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -32,18 +31,23 @@ def get_commenters_from_page(url):
                 except:
                     continue
         
-        # 名前とURLの両方を取得する
+        # 名前、URL、アイコンを取得
         link_elements = page.query_selector_all("a.a-link")
         for el in link_elements:
-            # 名前要素（span.truncate）がある場合のみ取得
             name_el = el.query_selector("span.truncate")
+            img_el = el.query_selector("img")
+            
             if name_el:
                 name = name_el.inner_text().strip()
                 href = el.get_attribute("href")
-                # URLが相対パスなら絶対パスに変換
                 full_url = f"https://note.com{href}" if href.startswith("/") else href
-                commenters_data.append({"name": name, "url": full_url})
+                icon_url = img_el.get_attribute("src") if img_el else ""
                 
+                commenters_data.append({
+                    "name": name, 
+                    "url": full_url,
+                    "icon": icon_url
+                })
         browser.close()
     return commenters_data
 
@@ -60,15 +64,16 @@ def main():
     # 統計用：名前の出現回数をカウント
     name_counts = Counter([c['name'] for c in all_commenters_info])
     
-    # プロフィールURLを一意に保存する辞書を作成
-    url_map = {c['name']: c['url'] for c in all_commenters_info}
+    # URLとアイコンを名前に関連付けて保存（重複排除のために最後のものを採用）
+    info_map = {c['name']: {"url": c['url'], "icon": c['icon']} for c in all_commenters_info}
     
-    # ランキングデータを「名前：{回数, URL}」の構造にする
+    # ランキングデータを構造化
     ranking = {}
     for name, count in name_counts.most_common():
         ranking[name] = {
             "count": count,
-            "url": url_map[name]
+            "url": info_map[name]["url"],
+            "icon": info_map[name]["icon"]
         }
     
     data = {
