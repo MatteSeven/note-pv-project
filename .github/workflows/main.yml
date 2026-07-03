@@ -1,7 +1,6 @@
 name: Update Note Images
 on:
   schedule:
-    # 毎日日本時間 0:00 に実行するための設定 (UTC 15:00)
     - cron: '0 15 * * *'
   workflow_dispatch:
 jobs:
@@ -20,9 +19,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # feedparser を追加しました
           pip install playwright beautifulsoup4 requests feedparser
-          playwright install chromium      - name: Run Scraper
+          playwright install chromium
       - name: Run Scraper
         run: python scraper.py
       - name: Run Comment Scraper
@@ -31,7 +29,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          # scraper.py および get_recent_comments.py が生成するファイルを全てコミット対象にする
           git add data.json history.json latest_comments.json
           if ! git diff --cached --quiet; then
             git commit -m "Update data: $(date +'%Y-%m-%d %H:%M:%S')"
