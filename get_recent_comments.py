@@ -31,22 +31,20 @@ def get_commenters_from_page(url):
                 except:
                     continue
         
-        # 名前とURL、アイコンを取得
-        link_elements = page.query_selector_all("a.a-link")
-        for el in link_elements:
-            name_el = el.query_selector("span.truncate")
-            img_el = el.query_selector("img")
+        # 修正：各コメント要素の親（コンテナ）を見つけてから中身を探索
+        # noteのコメント欄を囲む要素を探索
+        comment_items = page.query_selector_all("div.o-commentItem") 
+        for item in comment_items:
+            link_el = item.query_selector("a.a-link")
+            img_el = item.query_selector("img.a-image")
             
-            if name_el:
-                name = name_el.inner_text().strip()
-                href = el.get_attribute("href")
+            if link_el:
+                name = link_el.inner_text().strip()
+                href = link_el.get_attribute("href")
                 full_url = f"https://note.com{href}" if href.startswith("/") else href
                 
-                # アイコンURLの取得を強化
-                icon_url = ""
-                if img_el:
-                    # src が空の場合や data-src が優先される場合に対応
-                    icon_url = img_el.get_attribute("src") or img_el.get_attribute("data-src") or ""
+                # アイコンURLを取得（存在しない場合は空文字）
+                icon_url = img_el.get_attribute("src") if img_el else ""
                 
                 commenters_data.append({
                     "name": name, 
