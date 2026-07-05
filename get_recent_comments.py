@@ -5,7 +5,7 @@ import feedparser
 from collections import Counter
 from playwright.sync_api import sync_playwright
 
-def get_latest_article_urls(user_url, limit=7):
+def get_latest_article_urls(user_url, limit=4):
     rss_url = f"{user_url.rstrip('/')}/rss"
     print(f"DEBUG: RSSフィードから取得: {rss_url}")
     feed = feedparser.parse(rss_url)
