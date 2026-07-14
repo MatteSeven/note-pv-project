@@ -1,130 +1,100 @@
 {
-  "_last_updated": "2026-07-13 17:30:23",
+  "_last_updated": "2026-07-14 16:29:48",
   "ranking": {
+    "さえ | 49年組": {
+      "count": 3,
+      "url": "https://note.com/sae_49",
+      "icon": "https://assets.st-note.com/production/uploads/images/261207047/profile_45d6f46ef09a2bde272db3f502467b0f.png?fit=bounds&format=jpeg&quality=85&width=330"
+    },
+    "あん｜noteと遊ぶ": {
+      "count": 2,
+      "url": "https://note.com/aging_gracefully",
+      "icon": "https://assets.st-note.com/production/uploads/images/238258843/profile_52f43522d9e7e75a12acd9d6da59035c.png?fit=bounds&format=jpeg&quality=85&width=330"
+    },
+    "江田島獄長（今日はなにも考えず眠る217%）": {
+      "count": 2,
+      "url": "https://note.com/kayee",
+      "icon": "https://assets.st-note.com/production/uploads/images/294295273/profile_e4838172a823433abe7e198a949b06bb.png?fit=bounds&format=jpeg&quality=85&width=330"
+    },
     "コウヅキ ハナエ": {
-      "count": 1,
+      "count": 2,
       "url": "https://note.com/hanaekaki",
       "icon": "https://assets.st-note.com/production/uploads/images/262131492/profile_a2318ddf53f035c1f7d54b13c898e0e0.png?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "あん｜noteと遊ぶ": {
+    "かわやん2025": {
+      "count": 2,
+      "url": "https://note.com/wise_loris9148",
+      "icon": "https://assets.st-note.com/production/uploads/images/239431999/profile_6ffc2d963b9cbdc1446189896d86b465.png?fit=bounds&format=jpeg&quality=85&width=330"
+    },
+    "加古川瑛": {
       "count": 1,
-      "url": "https://note.com/aging_gracefully",
-      "icon": "https://assets.st-note.com/production/uploads/images/238258843/profile_52f43522d9e7e75a12acd9d6da59035c.png?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/dandy_stilt3941",
+      "icon": "https://assets.st-note.com/production/uploads/images/248162276/profile_c4b7e4626c20dbdcff50342332eb6bc2.png?fit=bounds&format=jpeg&quality=85&width=330"
     },
     "ひかり": {
       "count": 1,
       "url": "https://note.com/hikari_hn_2486",
       "icon": "https://assets.st-note.com/production/uploads/images/279849265/profile_eb972bd14030144f73734d1c9fbfae66.jpg?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "コスモス🌸 │ ３人と一緒に考えるnote": {
+    "みやび": {
       "count": 1,
-      "url": "https://note.com/cosmos_invest",
-      "icon": "https://assets.st-note.com/production/uploads/images/274108202/profile_9281a12226326472e24ac203a57061cf.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "江田島獄長（217％）": {
-      "count": 1,
-      "url": "https://note.com/kayee",
-      "icon": "https://assets.st-note.com/production/uploads/images/292354187/profile_2de4b214f0e4f457d97e14628a70afea.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "てぼっこ": {
-      "count": 1,
-      "url": "https://note.com/tebocco_bocchi",
-      "icon": "https://assets.st-note.com/production/uploads/images/290534577/profile_67a36083536a049bbd34e5a4d462e2bd.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "五條シンジ｜『Snowdrop Surfer』": {
-      "count": 1,
-      "url": "https://note.com/kitanoshinji",
-      "icon": "https://assets.st-note.com/production/uploads/images/263243256/profile_d0e5a60e70723ba546f0bf5528b96c24.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "さえ | 49年組": {
-      "count": 1,
-      "url": "https://note.com/sae_49",
-      "icon": "https://assets.st-note.com/production/uploads/images/261207047/profile_45d6f46ef09a2bde272db3f502467b0f.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "和田雄三｜AI×心理ブランディングデザイナー": {
-      "count": 1,
-      "url": "https://note.com/glad_dill2129",
-      "icon": "https://assets.st-note.com/production/uploads/images/265848866/profile_b0e386a458b5c21f7f00921837c9ffad.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "テル": {
-      "count": 1,
-      "url": "https://note.com/yumekanau81",
-      "icon": "https://assets.st-note.com/production/uploads/images/235215199/profile_9eef9ecfe629e457bc5ac8062617ce19.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "さくら": {
-      "count": 1,
-      "url": "https://note.com/sakura_wellness",
-      "icon": "https://assets.st-note.com/production/uploads/images/271348454/profile_596a4f7c4e29751c2f01a0c148e0dfed.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "かわやん2025": {
-      "count": 1,
-      "url": "https://note.com/wise_loris9148",
-      "icon": "https://assets.st-note.com/production/uploads/images/239431999/profile_6ffc2d963b9cbdc1446189896d86b465.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "🌸おはな＆🐕まめしばさん公式": {
-      "count": 1,
-      "url": "https://note.com/eager_phlox2461",
-      "icon": "https://assets.st-note.com/production/uploads/images/206114899/profile_68baea5ab0198c13748a02af04252fdc.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "埼玉の裏仕事人": {
-      "count": 1,
-      "url": "https://note.com/kiitto1968",
-      "icon": "https://assets.st-note.com/production/uploads/images/285982490/profile_801c5210e09b335f944cd6cdd9950434.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "Dapinkoの庭 〜ガジェット談話〜": {
-      "count": 1,
-      "url": "https://note.com/dapinko_studio",
-      "icon": "https://assets.st-note.com/production/uploads/images/254888191/profile_e4ea91f457626925ccc832ec01992b69.png?fit=bounds&format=jpeg&quality=85&width=330"
-    },
-    "ちんぱん🐒会社しかない状態を減らす45歳": {
-      "count": 1,
-      "url": "https://note.com/ojisan_chinpan",
-      "icon": "https://assets.st-note.com/production/uploads/images/260167058/profile_23f6adcb9012ca4b93f686f4f0ee9278.png?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/_oto_kotoba",
+      "icon": "https://assets.st-note.com/production/uploads/images/262367515/profile_d7914074ebb47e9f08eccbb0c11318bb.png?fit=bounds&format=jpeg&quality=85&width=330"
     },
     "カリンとユルナ": {
       "count": 1,
       "url": "https://note.com/open_briony8694",
       "icon": "https://assets.st-note.com/production/uploads/images/193569519/profile_a459657836fbcf1c0ba2d944d891211d.jpeg?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "アルフレッド(ALFRED)": {
+    "Takanashi（たかなし）": {
       "count": 1,
-      "url": "https://note.com/game_system_alex",
-      "icon": "https://assets.st-note.com/production/uploads/images/292002666/profile_6ba106e111d177f415972685775f15c0.png?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/takanashi_note01",
+      "icon": "https://assets.st-note.com/production/uploads/images/285979760/profile_93df0f9e814c2db6eb30332fe307f173.png?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "すみれ": {
+    "空風マナミ": {
       "count": 1,
-      "url": "https://note.com/genial_wren230",
-      "icon": "https://assets.st-note.com/production/uploads/images/238084585/profile_89fc16f6c87b7bc5de29c51c308f8f50.png?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/sorakaze_works",
+      "icon": "https://assets.st-note.com/production/uploads/images/247072511/profile_f8c3cb6911c80de4c8b865ead1a349c6.png?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "しずく": {
+    "てぼっこ": {
       "count": 1,
-      "url": "https://note.com/lively_stilt5025",
-      "icon": "https://assets.st-note.com/production/uploads/images/268959921/profile_00a4d92ca60b22d2d46c0d67426fd34b.jpeg?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/tebocco_bocchi",
+      "icon": "https://assets.st-note.com/production/uploads/images/290534577/profile_67a36083536a049bbd34e5a4d462e2bd.png?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "じゅん｜AI×ライフ・エンジニアリング": {
+    "みふゆ｜AIパートナーとnote実験中｜フォロバ100": {
       "count": 1,
-      "url": "https://note.com/sonnerie_ftrs",
-      "icon": "https://assets.st-note.com/production/uploads/images/283567473/profile_2bfd410136c3d56ac0c1e28efbccc016.png?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/kei_mifu",
+      "icon": "https://assets.st-note.com/production/uploads/images/290717168/profile_b961cc925c06a3cf8ba6a669f8139e10.png?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "ｓｅｏｒｉ🧚‍♂": {
+    "🐾コロッケノスケ☕🌙｜ゲッコーカフェ": {
       "count": 1,
-      "url": "https://note.com/alert_flea4300",
-      "icon": "https://assets.st-note.com/production/uploads/images/294145151/profile_e8b183875ea1dfedcd2a98a51722b0cd.jpg?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/rich_rat9818",
+      "icon": "https://assets.st-note.com/production/uploads/images/287199457/profile_30c4596fe178408bc6ffaf9daba6c09a.jpeg?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "けー虎のゆるっとページ": {
+    "にゃんきち": {
       "count": 1,
-      "url": "https://note.com/solo_diary",
-      "icon": "https://assets.st-note.com/production/uploads/images/265289375/profile_1d041d0cf7b1a8148e24e5f40a888f7c.png?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/hikaru_no_yume72",
+      "icon": "https://assets.st-note.com/production/uploads/images/256178434/profile_8e71e912cc7e2e050df493e53f7e66ef.png?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "中野英仁": {
+    "永野美紀子": {
       "count": 1,
-      "url": "https://note.com/hidehito_n",
-      "icon": "https://assets.st-note.com/production/uploads/images/221026933/profile_88a590dbb48fbccf046595e3d387d1d0.png?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/hayakara_tarot",
+      "icon": "https://assets.st-note.com/production/uploads/images/271224459/profile_f48339692e97fa5a0245861a6806dbaa.jpg?fit=bounds&format=jpeg&quality=85&width=330"
     },
-    "いじわる魔女の猫｜本のある暮らし": {
+    "ちんぱん🐒会社しかない状態を減らす45歳": {
       "count": 1,
-      "url": "https://note.com/ijineko",
-      "icon": "https://assets.st-note.com/production/uploads/images/260946644/profile_eb3adbfc6a98081a10df64c0b12dba59.png?fit=bounds&format=jpeg&quality=85&width=330"
+      "url": "https://note.com/ojisan_chinpan",
+      "icon": "https://assets.st-note.com/production/uploads/images/260167058/profile_23f6adcb9012ca4b93f686f4f0ee9278.png?fit=bounds&format=jpeg&quality=85&width=330"
+    },
+    "Ejii✦3（えじー）": {
+      "count": 1,
+      "url": "https://note.com/deft_raven2722",
+      "icon": "https://assets.st-note.com/production/uploads/images/226650475/profile_79c92585248200686353483f5629ebde.png?fit=bounds&format=jpeg&quality=85&width=330"
+    },
+    "かっぱの庵": {
+      "count": 1,
+      "url": "https://note.com/leal_oriole8107",
+      "icon": "https://assets.st-note.com/production/uploads/images/169525688/profile_3908df5d317e1d614be9864701a72351.jpg?fit=bounds&format=jpeg&quality=85&width=330"
     }
   }
 }
