@@ -1,22 +1,26 @@
 {
-  "date": "2026-09-22",
-  "startCount": 5505,
-  "followerCount": 5524,
+  "date": "2026-09-23",
+  "startCount": 5524,
+  "followerCount": 5550,
   "contents": {
     "134751834": {
-      "likes": 1613,
-      "comments": 142
+      "likes": 1629,
+      "comments": 145
+    },
+    "181739002": {
+      "likes": 43,
+      "comments": 11
     },
     "181523352": {
-      "likes": 61,
-      "comments": 23
+      "likes": 154,
+      "comments": 43
     },
     "181402723": {
-      "likes": 127,
+      "likes": 135,
       "comments": 27
     },
     "181247658": {
-      "likes": 140,
+      "likes": 145,
       "comments": 33
     },
     "181162727": {
@@ -24,15 +28,15 @@
       "comments": 10
     },
     "180826347": {
-      "likes": 151,
+      "likes": 160,
       "comments": 23
     },
     "180958417": {
-      "likes": 164,
+      "likes": 167,
       "comments": 39
     },
     "176569528": {
-      "likes": 144,
+      "likes": 145,
       "comments": 33
     },
     "180551534": {
@@ -44,31 +48,31 @@
       "comments": 51
     },
     "180243640": {
-      "likes": 252,
+      "likes": 251,
       "comments": 22
     },
     "179407382": {
-      "likes": 317,
+      "likes": 319,
       "comments": 55
     },
     "179756043": {
-      "likes": 193,
+      "likes": 194,
       "comments": 28
     },
     "179630484": {
-      "likes": 271,
+      "likes": 273,
       "comments": 29
     },
     "179530950": {
-      "likes": 313,
+      "likes": 316,
       "comments": 37
     },
     "179307365": {
-      "likes": 303,
+      "likes": 304,
       "comments": 38
     },
     "179118567": {
-      "likes": 410,
+      "likes": 413,
       "comments": 71
     },
     "178933369": {
@@ -92,11 +96,11 @@
       "comments": 41
     },
     "178207510": {
-      "likes": 220,
+      "likes": 221,
       "comments": 50
     },
     "178062447": {
-      "likes": 181,
+      "likes": 182,
       "comments": 50
     },
     "177945326": {
@@ -112,7 +116,7 @@
       "comments": 25
     },
     "177318874": {
-      "likes": 153,
+      "likes": 154,
       "comments": 33
     },
     "177139605": {
@@ -156,7 +160,7 @@
       "comments": 23
     },
     "175710228": {
-      "likes": 170,
+      "likes": 171,
       "comments": 87
     },
     "175279025": {
@@ -168,11 +172,11 @@
       "comments": 32
     },
     "175304577": {
-      "likes": 183,
+      "likes": 185,
       "comments": 48
     },
     "173674427": {
-      "likes": 180,
+      "likes": 181,
       "comments": 27
     },
     "174963846": {
@@ -184,7 +188,7 @@
       "comments": 27
     },
     "174638236": {
-      "likes": 171,
+      "likes": 172,
       "comments": 78
     },
     "174551551": {
@@ -272,7 +276,7 @@
       "comments": 29
     },
     "170581647": {
-      "likes": 248,
+      "likes": 250,
       "comments": 87
     },
     "171591405": {
@@ -288,8 +292,8 @@
       "comments": 38
     },
     "171127087": {
-      "likes": 204,
-      "comments": 27
+      "likes": 205,
+      "comments": 29
     },
     "170996141": {
       "likes": 242,
@@ -489,7 +493,7 @@
     },
     "163954518": {
       "likes": 266,
-      "comments": 50
+      "comments": 51
     },
     "163648395": {
       "likes": 85,
@@ -525,11 +529,11 @@
     },
     "162667611": {
       "likes": 206,
-      "comments": 34
+      "comments": 35
     },
     "162506658": {
       "likes": 173,
-      "comments": 30
+      "comments": 31
     },
     "162044551": {
       "likes": 226,
@@ -652,7 +656,7 @@
       "comments": 44
     },
     "157580249": {
-      "likes": 204,
+      "likes": 205,
       "comments": 28
     },
     "157526635": {
@@ -956,12 +960,12 @@
       "comments": 74
     },
     "146292787": {
-      "likes": 279,
-      "comments": 33
+      "likes": 280,
+      "comments": 34
     },
     "146046412": {
-      "likes": 143,
-      "comments": 13
+      "likes": 144,
+      "comments": 14
     },
     "145907445": {
       "likes": 299,
@@ -1812,7 +1816,7 @@
       "comments": 5
     },
     "122100900": {
-      "likes": 21,
+      "likes": 22,
       "comments": 1
     },
     "122002515": {
