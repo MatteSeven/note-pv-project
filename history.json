@@ -1,39 +1,43 @@
 {
-  "date": "2026-11-11",
-  "startCount": 6149,
-  "followerCount": 6151,
+  "date": "2026-11-12",
+  "startCount": 6151,
+  "followerCount": 6153,
   "contents": {
     "134751834": {
-      "likes": 1995,
+      "likes": 1997,
       "comments": 176
     },
+    "190677310": {
+      "likes": 70,
+      "comments": 19
+    },
     "186715175": {
-      "likes": 51,
-      "comments": 9
+      "likes": 94,
+      "comments": 20
     },
     "190396106": {
-      "likes": 102,
-      "comments": 28
+      "likes": 117,
+      "comments": 32
     },
     "190218659": {
-      "likes": 92,
+      "likes": 96,
       "comments": 21
     },
     "189883170": {
-      "likes": 120,
+      "likes": 125,
       "comments": 25
     },
     "189738789": {
-      "likes": 112,
+      "likes": 115,
       "comments": 22
     },
     "189664646": {
-      "likes": 131,
-      "comments": 25
+      "likes": 136,
+      "comments": 26
     },
     "188172060": {
-      "likes": 130,
-      "comments": 25
+      "likes": 133,
+      "comments": 26
     },
     "189237568": {
       "likes": 127,
@@ -72,7 +76,7 @@
       "comments": 18
     },
     "187527632": {
-      "likes": 128,
+      "likes": 129,
       "comments": 28
     },
     "187375739": {
@@ -116,7 +120,7 @@
       "comments": 42
     },
     "185645507": {
-      "likes": 128,
+      "likes": 129,
       "comments": 37
     },
     "185768967": {
@@ -280,7 +284,7 @@
       "comments": 38
     },
     "179118567": {
-      "likes": 470,
+      "likes": 471,
       "comments": 71
     },
     "178933369": {
@@ -544,7 +548,7 @@
       "comments": 37
     },
     "168724931": {
-      "likes": 374,
+      "likes": 373,
       "comments": 36
     },
     "169593662": {
@@ -800,7 +804,7 @@
       "comments": 42
     },
     "160156658": {
-      "likes": 239,
+      "likes": 238,
       "comments": 103
     },
     "160003487": {
@@ -1756,8 +1760,8 @@
       "comments": 26
     },
     "126546313": {
-      "likes": 126,
-      "comments": 126
+      "likes": 127,
+      "comments": 127
     },
     "127316262": {
       "likes": 104,
@@ -1996,7 +2000,7 @@
       "comments": 1
     },
     "122586789": {
-      "likes": 12,
+      "likes": 13,
       "comments": 1
     },
     "122572160": {
@@ -2004,7 +2008,7 @@
       "comments": 7
     },
     "122504756": {
-      "likes": 8,
+      "likes": 9,
       "comments": 0
     },
     "122359062": {
